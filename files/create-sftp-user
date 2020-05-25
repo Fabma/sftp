@@ -80,8 +80,9 @@ else
     usermod -p "*" "$user" # disabled password
 fi
 
-# Add SSH keys to authorized_keys with valid permissions
+# Use only configured SSH keys as authorized_keys
 if [ -d "/home/$user/.ssh/keys" ]; then
+    cat /dev/null > "/home/$user/.ssh/authorized_keys"
     for publickey in "/home/$user/.ssh/keys"/*; do
         cat "$publickey" >> "/home/$user/.ssh/authorized_keys"
     done
@@ -97,7 +98,7 @@ if [ -n "$dir" ]; then
         if [ ! -d "$dirPath" ]; then
             log "Creating directory: $dirPath"
             mkdir -p "$dirPath"
-            chown -R "$uid:users" "$dirPath"
+            chown -R "$uid:$gid" "$dirPath"
         else
             log "Directory already exists: $dirPath"
         fi
